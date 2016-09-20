@@ -1,0 +1,7 @@
+[package]
+name = "loginserver"
+version = "0.1.0"
+authors = ["Gexon <alimgan@gmail.com>"]
+
+[dependencies]
+getopts = "*"
