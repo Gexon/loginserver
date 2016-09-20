@@ -1,5 +1,5 @@
 extern crate getopts;
 
 fn main() {
-    println!("Login server1");
+    println!("Login server2");
 }
