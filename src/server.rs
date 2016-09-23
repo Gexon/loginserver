@@ -6,17 +6,17 @@ use commands;
 
 pub struct LoginServer {
     address: String,
-//    reader: BufReader<TcpStream>,
+    //    reader: BufReader<TcpStream>,
 }
 
 impl LoginServer {
     pub fn new(hostname: &str, port: &str) -> LoginServer {
         let address = format!("{}:{}", hostname, port);
-//        let stream = TcpStream::connect(&*address).unwrap();
+        //        let stream = TcpStream::connect(&*address).unwrap();
 
         LoginServer {
             address: address,
-//            reader: BufReader::new(stream),
+            //            reader: BufReader::new(stream),
         }
     }
 
