@@ -68,6 +68,7 @@ impl LoginServer {
                 let mut server_stream = TcpStream::connect(&*address).unwrap();
 
                 println!("Передача данных: {}", data);
+
                 let data = data.trim();
                 let data: Vec<&str> = data.split_whitespace().collect();
 
