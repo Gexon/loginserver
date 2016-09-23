@@ -2,25 +2,26 @@ use std::io::prelude::*;
 use std::net::{TcpListener, TcpStream};
 use std::io::BufReader;
 use std::thread;
+use commands;
 
 pub struct LoginServer {
     address: String,
-    reader: BufReader<TcpStream>,
+//    reader: BufReader<TcpStream>,
 }
 
 impl LoginServer {
     pub fn new(hostname: &str, port: &str) -> LoginServer {
         let address = format!("{}:{}", hostname, port);
-        let stream = TcpStream::connect(&*address).unwrap();
+//        let stream = TcpStream::connect(&*address).unwrap();
 
         LoginServer {
             address: address,
-            reader: BufReader::new(stream),
+//            reader: BufReader::new(stream),
         }
     }
 
-    pub fn start(&mut self) {
-        let listener = match TcpListener::bind(&*self.addres) {
+    pub fn start(&mut self) -> bool {
+        let listener = match TcpListener::bind(&*self.address) {
             Ok(data) => data,
             Err(e) => {
                 println!("Ошибка открытия порта: {}", e);
@@ -31,8 +32,10 @@ impl LoginServer {
         for stream in listener.incoming() {
             match stream {
                 Ok(mut stream) => {
+                    let address = self.address.clone();
+
                     thread::spawn(move || {
-                        handle_client(&mut stream)
+                        handle_client(address, &mut stream);
                     });
                 },
                 Err(e) => {
@@ -42,8 +45,13 @@ impl LoginServer {
             }
         }
 
-        fn handle_client(stream: &mut TcpStream) {
-            let reader = BufReader::new(stream);
+        fn handle_client(address: String, client_stream: &mut TcpStream) {
+            let mut reader = BufReader::new(client_stream);
+
+
+            println!("Подключен неизвестный клиент, ip: {}:{}",
+                     reader.get_ref().local_addr().unwrap().ip(),
+                     reader.get_ref().local_addr().unwrap().port());
 
             loop {
                 let mut data = String::new();
@@ -57,13 +65,23 @@ impl LoginServer {
                     _ => (),
                 }
 
+                let mut server_stream = TcpStream::connect(&*address).unwrap();
+
                 println!("Передача данных: {}", data);
+                let data = data.trim();
+                let data: Vec<&str> = data.split_whitespace().collect();
+
+                let result = match data[0] {
+                    "login" => commands::login(reader.get_mut(), &mut server_stream, &data[1..]),
+                    _ => false,
+                };
+
+                if !result {
+                    println!("Неверные данные");
+                }
             }
         }
 
-
-        //        loop {
-        //            let _ = self.reader.get_mut().write(b"Dotakiller\n");
-        //        }
+        true
     }
 }
