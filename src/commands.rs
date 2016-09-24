@@ -9,10 +9,10 @@ pub fn login(stream: &mut TcpStream, server_stream: &mut TcpStream, args: &[&str
     println!("Готов к передаче данных, имя {} пароль {}", args[0], args[1]);
 
 
-    //    match server_stream.write(format!("login {} {}\n", args[0], args[1]).as_bytes()) {
-    //        Ok(_) => true,
-    //        Err(_) => false,
-    //    }
+    match server_stream.write(format!("login {} {}\n", args[0], args[1]).as_bytes()) {
+        Ok(_) => true,
+        Err(_) => false,
+    }
 
-    true
+    //true
 }

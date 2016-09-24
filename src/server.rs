@@ -53,6 +53,8 @@ impl LoginServer {
                      reader.get_ref().local_addr().unwrap().ip(),
                      reader.get_ref().local_addr().unwrap().port());
 
+            let mut server_stream = TcpStream::connect(&*address).unwrap();
+
             loop {
                 let mut data = String::new();
                 match reader.read_line(&mut data).unwrap() {
@@ -65,7 +67,7 @@ impl LoginServer {
                     _ => (),
                 }
 
-                let mut server_stream = TcpStream::connect(&*address).unwrap();
+
 
                 println!("Передача данных: {}", data);
 
@@ -78,7 +80,7 @@ impl LoginServer {
                 };
 
                 if !result {
-                    println!("Неверные данные");
+                    println!("Неверная команда");
                 }
             }
         }
