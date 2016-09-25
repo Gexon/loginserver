@@ -5,3 +5,4 @@ authors = ["Gexon <alimgan@gmail.com>"]
 
 [dependencies]
 getopts = "*"
+mysql = "*"

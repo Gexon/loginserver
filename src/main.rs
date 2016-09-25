@@ -1,7 +1,9 @@
+#[macro_use]
 extern crate getopts;
 //mod application;
 mod server;
 mod commands;
+mod SQLQuery;
 use server::LoginServer;
 
 fn main() {
@@ -12,8 +14,9 @@ fn main() {
 //        Some(data) => data,
 //        None => return,
 //    };
+    SQLQuery::add_account("test1", "none", 0);
 
     let mut server = LoginServer::new(hname, pname);
 
-    server.start();
+    //server.start();
 }

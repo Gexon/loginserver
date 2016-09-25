@@ -1,5 +1,7 @@
 use std::net::TcpStream;
 use std::io::prelude::*;
+use SQLQuery;
+
 
 pub fn login(stream: &mut TcpStream, server_stream: &mut TcpStream, args: &[&str]) -> bool {
     if args.len() != 2 {
@@ -15,4 +17,8 @@ pub fn login(stream: &mut TcpStream, server_stream: &mut TcpStream, args: &[&str
     }
 
     //true
+}
+
+pub fn check_auth(name: &str, mdhash: &str) {
+    SQLQuery::get_mdhash(name);
 }
