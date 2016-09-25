@@ -30,7 +30,7 @@ pub fn get_mdhash(name: &str) {
 pub fn add_account(name: &str, hash: &str, rage911: i32) {
     let pool = mysql::Pool::new("mysql://root:dk@localhost:3306").unwrap();
 
-    pool.prepare(format!(r"INSERT INTO accounts (name, hash, rage911) VALUES\
-                                ({}, {}, {})", name, hash, rage911));
+    let mut stmt0 = pool.prepare("INSERT INTO dotakiller.accounts (name, hash, rage911) VALUES (?, ?, ?)").unwrap();
+    stmt0.execute((name, hash, rage911)).unwrap();
 }
 

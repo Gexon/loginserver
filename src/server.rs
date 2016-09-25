@@ -53,7 +53,6 @@ impl LoginServer {
                      reader.get_ref().local_addr().unwrap().ip(),
                      reader.get_ref().local_addr().unwrap().port());
 
-            let mut server_stream = TcpStream::connect(&*address).unwrap();
 
             loop {
                 let mut data = String::new();
@@ -67,6 +66,7 @@ impl LoginServer {
                     _ => (),
                 }
 
+                //let mut server_stream = TcpStream::connect(&*address).unwrap();
 
                 println!("Передача данных: {}", data);
 
@@ -75,6 +75,7 @@ impl LoginServer {
 
                 let result = match data[0] {
                     "login" => commands::login(reader.get_mut(), &mut server_stream, &data[1..]),
+                    "register" => commands::new_account(&data[1..]),
                     _ => false,
                 };
 

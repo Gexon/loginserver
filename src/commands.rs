@@ -1,6 +1,6 @@
 use std::net::TcpStream;
 use std::io::prelude::*;
-use SQLQuery;
+use SQLQuery as db;
 
 
 pub fn login(stream: &mut TcpStream, server_stream: &mut TcpStream, args: &[&str]) -> bool {
@@ -19,6 +19,16 @@ pub fn login(stream: &mut TcpStream, server_stream: &mut TcpStream, args: &[&str
     //true
 }
 
+pub fn new_account(args: &[&str]) -> bool {
+    if args.len() != 2 {
+        return false
+    }
+
+    db::add_account(args[0], args[1], 0);
+
+    true
+}
+
 pub fn check_auth(name: &str, mdhash: &str) {
-    SQLQuery::get_mdhash(name);
+    db::get_mdhash(name);
 }
