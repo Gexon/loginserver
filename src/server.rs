@@ -68,7 +68,6 @@ impl LoginServer {
                 }
 
 
-
                 println!("Передача данных: {}", data);
 
                 let data = data.trim();
