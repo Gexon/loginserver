@@ -6,3 +6,4 @@ authors = ["Gexon <alimgan@gmail.com>"]
 [dependencies]
 getopts = "*"
 mysql = "*"
+rust-crypto = "^0.2"

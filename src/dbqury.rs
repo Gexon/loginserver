@@ -17,7 +17,7 @@ pub fn get_mdhash(name: &str) -> String {
     let mut stmt0 = pool.prepare("  SELECT hash \
                                     FROM dotakiller.accounts \
                                     WHERE name=?", ).unwrap();
-    for row in stmt0.execute((name,)).unwrap() {
+    for row in stmt0.execute((name, )).unwrap() {
         let retHash: String = mysql::from_row::<String>(row.unwrap());
         return retHash;
     }
@@ -42,9 +42,12 @@ pub fn check_name(name: &str) -> bool {
     let mut stmt0 = pool.prepare(format!("  SELECT * \
                                             FROM dotakiller.accounts \
                                             WHERE name='{}'", name)).unwrap();
+
     for row in stmt0.execute(()).unwrap() {
         return true;
     }
 
     false
+    // !stmt0.execute(()).unwrap().is_empty()
+
 }

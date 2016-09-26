@@ -14,7 +14,10 @@ pub fn login(stream: &mut TcpStream, server_stream: &mut TcpStream, args: &[&str
         println!("Пользователь {} не зарегистрирован. Провожу регистрацию нового пользователя.", args[0]);
         db::add_account(args[0], args[1], 0);
     } else {
-        db::get_mdhash(args[0]);
+        let hash = db::get_mdhash(args[0]);
+        if hash == args[1] {
+            return true
+        }
     }
 
 //    match server_stream.write(format!("login {} {}\n", args[0], args[1]).as_bytes()) {
