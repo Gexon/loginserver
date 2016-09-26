@@ -1,6 +1,6 @@
 use std::net::TcpStream;
 use std::io::prelude::*;
-use SQLQuery as db;
+use dbqury as db;
 
 
 pub fn login(stream: &mut TcpStream, server_stream: &mut TcpStream, args: &[&str]) -> bool {
@@ -8,15 +8,21 @@ pub fn login(stream: &mut TcpStream, server_stream: &mut TcpStream, args: &[&str
         return false
     }
 
-    println!("Готов к передаче данных, имя {} пароль {}", args[0], args[1]);
+    //println!("Готов к передаче данных, имя {} пароль {}", args[0], args[1]);
 
-
-    match server_stream.write(format!("login {} {}\n", args[0], args[1]).as_bytes()) {
-        Ok(_) => true,
-        Err(_) => false,
+    if !db::check_name(args[0]) {
+        println!("Пользователь {} не зарегистрирован. Провожу регистрацию нового пользователя.", args[0]);
+        db::add_account(args[0], args[1], 0);
+    } else {
+        db::get_mdhash(args[0]);
     }
 
-    //true
+//    match server_stream.write(format!("login {} {}\n", args[0], args[1]).as_bytes()) {
+//        Ok(_) => true,
+//        Err(_) => false,
+//    }
+
+    true
 }
 
 pub fn new_account(args: &[&str]) -> bool {
@@ -24,6 +30,7 @@ pub fn new_account(args: &[&str]) -> bool {
         return false
     }
 
+    println!("Регистрирую новый аккаунт, имя {} пароль {}", args[0], args[1]);
     db::add_account(args[0], args[1], 0);
 
     true

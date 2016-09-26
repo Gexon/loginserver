@@ -3,7 +3,7 @@ extern crate getopts;
 //mod application;
 mod server;
 mod commands;
-mod SQLQuery;
+mod dbqury;
 use server::LoginServer;
 
 fn main() {
