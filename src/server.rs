@@ -1,6 +1,6 @@
-use std::io::prelude::*;
 use std::net::{TcpListener, TcpStream};
-use std::io::BufReader;
+use std::io::{BufReader, BufWriter};
+use std::io::prelude::*;
 use std::thread;
 use commands;
 
@@ -46,41 +46,49 @@ impl LoginServer {
         }
 
         fn handle_client(address: String, client_stream: &mut TcpStream) {
-            let mut reader = BufReader::new(client_stream);
-
-
-            println!("Подключен неизвестный клиент, ip: {}:{}",
+            /*println!("Подключен неизвестный клиент, ip: {}:{}",
                      reader.get_ref().local_addr().unwrap().ip(),
-                     reader.get_ref().local_addr().unwrap().port());
+                     reader.get_ref().local_addr().unwrap().port());*/
 
+            let mut writer = BufWriter::new(&client_stream);
 
             loop {
                 let mut data = String::new();
-                match reader.read_line(&mut data).unwrap() {
-                    0 => {
-                        println!("Неизвестный клиент был отключен, ip: {}:{}",
-                                 reader.get_ref().local_addr().unwrap().ip(),
-                                 reader.get_ref().local_addr().unwrap().port());
-                        return;
-                    },
-                    _ => (),
-                }
 
-                let mut server_stream = TcpStream::connect(&*address).unwrap();
+                let result = {
+                    let mut reader = BufReader::new(client_stream);
 
-                println!("Принял данные: {}", data);
 
-                let data = data.trim();
-                let data: Vec<&str> = data.split_whitespace().collect();
+                    match reader.read_line(&mut data).unwrap() {
+                        0 => {
+                            println!("Неизвестный клиент был отключен, ip: {}:{}",
+                                     reader.get_ref().local_addr().unwrap().ip(),
+                                     reader.get_ref().local_addr().unwrap().port());
+                            return;
+                        },
+                        _ => (),
+                    }
 
-                let result = match data[0] {
-                    "login" => commands::login(reader.get_mut(), &mut server_stream, &data[1..]),
-                    "register" => commands::new_account(&data[1..]),
-                    _ => false,
+                    let mut server_stream = TcpStream::connect(&*address).unwrap();
+
+                    println!("Принял данные: {}", data);
+
+                    let data = data.trim();
+                    let data: Vec<&str> = data.split_whitespace().collect();
+
+                    match data[0] {
+                        "login" => commands::login(reader.get_mut(), &mut server_stream, &data[1..]),
+                        "register" => commands::new_account(&data[1..]),
+                        _ => false,
+                    }
                 };
 
                 if !result {
                     println!("Неверная команда");
+                } else {
+                    writer.write(b"OK");
+                    //let client_reference = client_stream.by_ref();
+                    //let _ = client_reference.write(b"OK");
                 }
             }
         }
