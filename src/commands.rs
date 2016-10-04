@@ -1,9 +1,10 @@
 use std::net::TcpStream;
+use std::io::BufWriter;
 use std::io::prelude::*;
 use dbqury as db;
 
 
-pub fn login(stream: &mut TcpStream, server_stream: &mut TcpStream, args: &[&str]) -> bool {
+pub fn login(writer: &mut BufWriter<&TcpStream>, server_stream: &mut TcpStream, args: &[&str]) -> bool {
     if args.len() != 2 {
         return false
     }

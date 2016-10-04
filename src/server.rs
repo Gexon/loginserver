@@ -31,11 +31,11 @@ impl LoginServer {
 
         for stream in listener.incoming() {
             match stream {
-                Ok(mut stream) => {
+                Ok(stream) => {
                     let address = self.address.clone();
 
                     thread::spawn(move || {
-                        handle_client(address, &mut stream);
+                        handle_client(address, stream);
                     });
                 },
                 Err(e) => {
@@ -45,20 +45,18 @@ impl LoginServer {
             }
         }
 
-        fn handle_client(address: String, client_stream: &mut TcpStream) {
+        fn handle_client(address: String, client_stream: TcpStream) {
             /*println!("Подключен неизвестный клиент, ip: {}:{}",
                      reader.get_ref().local_addr().unwrap().ip(),
                      reader.get_ref().local_addr().unwrap().port());*/
 
+            let mut reader = BufReader::new(&client_stream);
             let mut writer = BufWriter::new(&client_stream);
 
             loop {
                 let mut data = String::new();
 
                 let result = {
-                    let mut reader = BufReader::new(client_stream);
-
-
                     match reader.read_line(&mut data).unwrap() {
                         0 => {
                             println!("Неизвестный клиент был отключен, ip: {}:{}",
@@ -77,7 +75,7 @@ impl LoginServer {
                     let data: Vec<&str> = data.split_whitespace().collect();
 
                     match data[0] {
-                        "login" => commands::login(reader.get_mut(), &mut server_stream, &data[1..]),
+                        "login" => commands::login(&mut writer, &mut server_stream, &data[1..]),
                         "register" => commands::new_account(&data[1..]),
                         _ => false,
                     }
@@ -86,9 +84,8 @@ impl LoginServer {
                 if !result {
                     println!("Неверная команда");
                 } else {
-                    writer.write(b"OK");
-                    //let client_reference = client_stream.by_ref();
-                    //let _ = client_reference.write(b"OK");
+                    writer.write(b"OK").unwrap();
+                    writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
                 }
             }
         }
