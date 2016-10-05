@@ -7,7 +7,7 @@ struct Account {
     account_hash: String,
 }
 
-pub fn init() {
+pub fn _init() {
     //let pool = mysql::Pool::new("mysql://dotakiller:dk@localhost:3307").unwrap();
 }
 
@@ -22,8 +22,7 @@ pub fn get_mdhash(name: &str) -> String {
         return ret_hash;
     }
 
-    let ret_hash: String = "".to_string();
-    ret_hash
+    "".to_string()
 }
 
 pub fn add_account(name: &str, hash: &str, rage911: i32) {
@@ -43,11 +42,12 @@ pub fn check_name(name: &str) -> bool {
                                             FROM dotakiller.accounts \
                                             WHERE name='{}'", name)).unwrap();
 
-    for row in stmt0.execute(()).unwrap() {
-        return true;
-    }
-    // !stmt0.execute(()).unwrap().is_empty();
-    false
-    // !stmt0.execute(()).unwrap().is_empty()
+//    for row in stmt0.execute(()).unwrap() {
+//        return true;
+//    }
+
+    let result = stmt0.execute(());
+    let first = result.unwrap().next();
+    first.is_some()
 
 }

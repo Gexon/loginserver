@@ -1,10 +1,10 @@
 use std::net::TcpStream;
 use std::io::BufWriter;
-use std::io::prelude::*;
+//use std::io::prelude::*;
 use dbqury as db;
 
 
-pub fn login(writer: &mut BufWriter<&TcpStream>, server_stream: &mut TcpStream, args: &[&str]) -> bool {
+pub fn login(_writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream, args: &[&str]) -> bool {
     if args.len() != 2 {
         return false
     }
@@ -40,6 +40,6 @@ pub fn new_account(args: &[&str]) -> bool {
     true
 }
 
-pub fn check_auth(name: &str, mdhash: &str) {
+pub fn _check_auth(name: &str, _mdhash: &str) {
     db::get_mdhash(name);
 }

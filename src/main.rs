@@ -1,6 +1,5 @@
 #[macro_use]
 extern crate getopts;
-//mod application;
 mod server;
 mod commands;
 mod dbqury;

@@ -4,6 +4,9 @@ use std::io::prelude::*;
 use std::thread;
 use commands;
 
+use std::mem;
+use std::slice;
+
 pub struct LoginServer {
     address: String,
     //    reader: BufReader<TcpStream>,
@@ -57,14 +60,11 @@ impl LoginServer {
                 let mut data = String::new();
 
                 let result = {
-                    match reader.read_line(&mut data).unwrap() {
-                        0 => {
-                            println!("Неизвестный клиент был отключен, ip: {}:{}",
-                                     reader.get_ref().local_addr().unwrap().ip(),
-                                     reader.get_ref().local_addr().unwrap().port());
-                            return;
-                        },
-                        _ => (),
+                    if let 0 = reader.read_line(&mut data).unwrap() {
+                        println! ("Неизвестный клиент был отключен, ip: {}:{}",
+                                  reader.get_ref().local_addr().unwrap().ip(),
+                                  reader.get_ref().local_addr().unwrap().port());
+                        return;
                     }
 
                     let mut server_stream = TcpStream::connect(&*address).unwrap();
@@ -84,8 +84,43 @@ impl LoginServer {
                 if !result {
                     println!("Неверная команда");
                 } else {
-                    writer.write(b"OK").unwrap();
+                    let answer = String::from("OK");
+                    let size_dat = answer.len();
+
+                    // превращаем размер в байты
+                    let size: usize = size_dat;
+                    let csize: *const usize = &size;
+                    let bp: *const u8 = csize as *const _;
+                    let bs: &[u8] = unsafe {
+                        slice::from_raw_parts(
+                            bp,
+                            mem::size_of::<usize>()
+                        )
+                    };
+
+//                    println!("Размер данных answer {}", answer.len());
+//                    println!("Содержимое size_dat {}", size_dat);
+//                    println!("Размер байтмассива bs {}", bs.len());
+
+                    //let _ = writer.write(bs);   // шлем 8 байт размер данных.
+//                    let _ = writer.write(answer.as_bytes());
+                    let _ = writer.write(b"OK\0\n");
                     writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
+
+
+
+
+
+
+                    /*
+                        // some bytes, in a vector
+                        let sparkle_heart = vec![240, 159, 146, 150];
+
+                        // We know these bytes are valid, so we'll use `unwrap()`.
+                        let sparkle_heart = String::from_utf8(sparkle_heart).unwrap();
+
+                        assert_eq!("💖", sparkle_heart);
+                    */
                 }
             }
         }
