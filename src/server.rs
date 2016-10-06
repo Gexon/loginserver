@@ -4,8 +4,8 @@ use std::io::prelude::*;
 use std::thread;
 use commands;
 
-use std::mem;
-use std::slice;
+//use std::mem;
+//use std::slice;
 
 pub struct LoginServer {
     address: String,
@@ -77,26 +77,29 @@ impl LoginServer {
                     match data[0] {
                         "login" => commands::login(&mut writer, &mut server_stream, &data[1..]),
                         "register" => commands::new_account(&data[1..]),
+                        "chat" => commands::chat(&mut writer, &mut server_stream, &data[1..]),
                         _ => false,
                     }
                 };
 
                 if !result {
                     println!("Неверная команда");
+                    let _ = writer.write(b"ERR_COMMAND\n");
+                    writer.flush().unwrap();
                 } else {
-                    let answer = String::from("OK");
-                    let size_dat = answer.len();
+                    //let answer = String::from("OK");
+//                    let size_dat = answer.len();
 
                     // превращаем размер в байты
-                    let size: usize = size_dat;
-                    let csize: *const usize = &size;
-                    let bp: *const u8 = csize as *const _;
-                    let bs: &[u8] = unsafe {
-                        slice::from_raw_parts(
-                            bp,
-                            mem::size_of::<usize>()
-                        )
-                    };
+//                    let size: usize = size_dat;
+//                    let csize: *const usize = &size;
+//                    let bp: *const u8 = csize as *const _;
+//                    let bs: &[u8] = unsafe {
+//                        slice::from_raw_parts(
+//                            bp,
+//                            mem::size_of::<usize>()
+//                        )
+//                    };
 
 //                    println!("Размер данных answer {}", answer.len());
 //                    println!("Содержимое size_dat {}", size_dat);
@@ -104,8 +107,8 @@ impl LoginServer {
 
                     //let _ = writer.write(bs);   // шлем 8 байт размер данных.
 //                    let _ = writer.write(answer.as_bytes());
-                    let _ = writer.write(b"OK\0\n");
-                    writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
+                    //let _ = writer.write(b"OK\n");
+                    //writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
 
 
 
