@@ -49,9 +49,8 @@ impl LoginServer {
         }
 
         fn handle_client(address: String, client_stream: TcpStream) {
-            /*println!("Подключен неизвестный клиент, ip: {}:{}",
-                     reader.get_ref().local_addr().unwrap().ip(),
-                     reader.get_ref().local_addr().unwrap().port());*/
+            println!("Подключен неизвестный клиент, ip: {}",
+                     client_stream.peer_addr().unwrap().ip());
 
             let mut reader = BufReader::new(&client_stream);
             let mut writer = BufWriter::new(&client_stream);
@@ -62,8 +61,8 @@ impl LoginServer {
                 let result = {
                     if let 0 = reader.read_line(&mut data).unwrap() {
                         println! ("Неизвестный клиент был отключен, ip: {}:{}",
-                                  reader.get_ref().local_addr().unwrap().ip(),
-                                  reader.get_ref().local_addr().unwrap().port());
+                                  client_stream.peer_addr().unwrap().ip(),
+                                  client_stream.peer_addr().unwrap().port());
                         return;
                     }
 
@@ -72,12 +71,14 @@ impl LoginServer {
                     println!("Принял данные: {}", data);
 
                     let data = data.trim();
-                    let data: Vec<&str> = data.split_whitespace().collect();
+                    //let data: Vec<&str> = data.split_whitespace().collect();
+                    let data: Vec<&str> = data.splitn(2, ' ').collect();
+
 
                     match data[0] {
-                        "login" => commands::login(&mut writer, &mut server_stream, &data[1..]),
-                        "register" => commands::new_account(&data[1..]),
-                        "chat" => commands::chat(&mut writer, &mut server_stream, &data[1..]),
+                        "login" => commands::login(&mut writer, &mut server_stream, data[1]),
+                        "register" => commands::new_account(data[1]),
+                        "chat" => commands::chat(&mut writer, &mut server_stream, data[1]),
                         _ => false,
                     }
                 };
