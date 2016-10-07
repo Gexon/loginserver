@@ -42,7 +42,7 @@ impl LoginServer {
                     });
                 },
                 Err(e) => {
-                    println!("Ошибка при запуске сервера: {}", e);
+                    println!("Ошибка при подключении клиента: {}", e);
                     return false;
                 }
             }
