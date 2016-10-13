@@ -17,5 +17,6 @@ fn main() {
 
     let mut server = LoginServer::new(hname, pname);
 
+    println!("Запускаю логин-сервер.");
     server.start();
 }
