@@ -78,7 +78,6 @@ impl LoginServer {
                     match data[0] {
                         "login" => commands::login(&mut writer, &mut server_stream, data[1]),
                         "register" => commands::new_account(data[1]),
-                        "chat" => commands::chat(&mut writer, &mut server_stream, data[1]),
                         _ => false,
                     }
                 };
