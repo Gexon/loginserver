@@ -1,9 +1,10 @@
-#[macro_use]
-extern crate getopts;
+#[macro_use] extern crate getopts;
 extern crate time;
+
 mod server;
 mod commands;
 mod dbqury;
+
 use server::LoginServer;
 
 fn main() {
@@ -11,14 +12,14 @@ fn main() {
     //let hname: &str = "194.87.237.144";
     let pname: &str = "6656";
 
-//    // let args = match application::parse_command_line(){
-//        Some(data) => data,
-//        None => return,
-//    };
+    //    // let args = match application::parse_command_line(){
+    //        Some(data) => data,
+    //        None => return,
+    //    };
 
 
     let mut server = LoginServer::new(hname, pname);
 
-    println!("Запускаю логин-сервер.");
+
     server.start();
 }

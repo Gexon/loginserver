@@ -25,7 +25,10 @@ impl LoginServer {
 
     pub fn start(&mut self) -> bool {
         let listener = match TcpListener::bind(&*self.address) {
-            Ok(data) => data,
+            Ok(data) => {
+                println!("Логин-сервер запущен.");
+                data
+            },
             Err(e) => {
                 println!("Ошибка открытия порта: {}", e);
                 return false;
@@ -88,25 +91,25 @@ impl LoginServer {
                     writer.flush().unwrap();
                 } else {
                     //let answer = String::from("OK");
-//                    let size_dat = answer.len();
+                    //                    let size_dat = answer.len();
 
                     // превращаем размер в байты
-//                    let size: usize = size_dat;
-//                    let csize: *const usize = &size;
-//                    let bp: *const u8 = csize as *const _;
-//                    let bs: &[u8] = unsafe {
-//                        slice::from_raw_parts(
-//                            bp,
-//                            mem::size_of::<usize>()
-//                        )
-//                    };
+                    //                    let size: usize = size_dat;
+                    //                    let csize: *const usize = &size;
+                    //                    let bp: *const u8 = csize as *const _;
+                    //                    let bs: &[u8] = unsafe {
+                    //                        slice::from_raw_parts(
+                    //                            bp,
+                    //                            mem::size_of::<usize>()
+                    //                        )
+                    //                    };
 
-//                    println!("Размер данных answer {}", answer.len());
-//                    println!("Содержимое size_dat {}", size_dat);
-//                    println!("Размер байтмассива bs {}", bs.len());
+                    //                    println!("Размер данных answer {}", answer.len());
+                    //                    println!("Содержимое size_dat {}", size_dat);
+                    //                    println!("Размер байтмассива bs {}", bs.len());
 
                     //let _ = writer.write(bs);   // шлем 8 байт размер данных.
-//                    let _ = writer.write(answer.as_bytes());
+                    //                    let _ = writer.write(answer.as_bytes());
                     //let _ = writer.write(b"OK\n");
                     //writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
 
