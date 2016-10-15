@@ -1,6 +1,8 @@
 use std::net::TcpStream;
 use std::io::BufWriter;
 use std::io::prelude::*;
+use time::{Timespec, Duration};
+use time;
 use dbqury as db;
 
 
@@ -19,8 +21,11 @@ pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream,
         writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
         return true
     } else {
+        // не проверяем токен авторизации
         let hash = db::get_mdhash(args[0]);
         if hash == args[1] {
+            new_auth_token(args[0]);
+            //if check_token(args[0]) { println!("токен актуален");}
             let _ = writer.write(b"OK\n");
             writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
             return true
@@ -70,6 +75,45 @@ pub fn new_account(args: &str) -> bool {
     true
 }
 
-pub fn _check_auth(name: &str, _mdhash: &str) {
-    db::get_mdhash(name);
+// проверяем авторизацию и ее актуальность
+pub fn _check_auth(name: &str, in_hash: &str) -> bool {
+    let hash = db::get_mdhash(name);
+    if hash == in_hash {
+        // добавить проверку токена авторизации
+        return true
+    }
+    false
+}
+
+// пишем новый токен авторизации
+pub fn new_auth_token(name: &str){
+    let current_time = time::get_time();
+    //let localtime = time::now();
+    //let localtime = localtime.asctime();
+    //println!("Unixtime: {}, localtime: {}", current_time.sec, localtime);
+    //let stime = time::strftime("{}", &localtime);
+    //let stime = time::strftime("{}", current_time.sec);
+
+    // вычисляем новый токен или обновляем существующий.
+    //let now = current_time.sec;
+    // в токен пишем пока в чистом виде время окончания токена.
+    let token: Timespec = current_time + Duration::days(1);
+    //let stoken = format!("{}", token);
+    // записываем токен в БД
+    db::set_token(name, token.sec);
+
+}
+
+// проверяем актуальность токена
+pub fn _check_token(name: &str) -> bool {
+    // получаем из БД токен
+    let token: i64 = db::_get_token(name);
+    // расшифровываем
+    // получаем текущую дату и сравниваем не истек ли токен.
+    let current_time = time::get_time();
+    if token > current_time.sec {
+        return true
+    }
+
+    false
 }
