@@ -24,9 +24,9 @@ pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream,
         // не проверяем токен авторизации
         let hash = db::get_mdhash(args[0]);
         if hash == args[1] {
-            new_auth_token(args[0]);
-            //if check_token(args[0]) { println!("токен актуален");}
-            let _ = writer.write(b"OK\n");
+            let token_i64: i64 = new_auth_token(args[0]);
+            let answer: String = format!("OK {}\n", token_i64);
+            let _ = writer.write(answer.as_bytes());
             writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
             return true
         } else {
@@ -41,7 +41,6 @@ pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream,
     //    }
     true
 }
-
 
 
 pub fn new_account(args: &str) -> bool {
@@ -67,22 +66,22 @@ pub fn _check_auth(name: &str, in_hash: &str) -> bool {
 }
 
 // пишем новый токен авторизации
-pub fn new_auth_token(name: &str){
+pub fn new_auth_token(name: &str) -> i64 {
     let current_time = time::get_time();
-    //let localtime = time::now();
-    //let localtime = localtime.asctime();
-    //println!("Unixtime: {}, localtime: {}", current_time.sec, localtime);
-    //let stime = time::strftime("{}", &localtime);
-    //let stime = time::strftime("{}", current_time.sec);
+    // let localtime = time::now();
+    // let localtime = localtime.asctime();
+    // println!("Unixtime: {}, localtime: {}", current_time.sec, localtime);
+    // let stime = time::strftime("{}", &localtime);
+    // let stime = time::strftime("{}", current_time.sec);
 
     // вычисляем новый токен или обновляем существующий.
-    //let now = current_time.sec;
+    // let now = current_time.sec;
     // в токен пишем пока в чистом виде время окончания токена.
     let token: Timespec = current_time + Duration::days(1);
-    //let stoken = format!("{}", token);
+    // let stoken = format!("{}", token);
     // записываем токен в БД
     db::set_token(name, token.sec);
-
+    token.sec
 }
 
 // проверяем актуальность токена
