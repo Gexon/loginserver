@@ -42,26 +42,7 @@ pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream,
     true
 }
 
-//pub fn chat(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream, args: &str) -> bool {
-//
-////    let merged: String = args.iter()
-////        .flat_map(|s| s.chars().chain(" ".chars()))
-////        .collect();
-//
-//    /*let mut owned_string: String = "hello ".to_owned();
-//    let borrowed_string: &str = "world";
-//    owned_string.push_str(borrowed_string);
-//    println!("{}", owned_string);*/
-//
-//    let cmsg: &str = "chat_all";
-//    let msg: &str = args;//args[0..];
-//    let emsg: &str = "\n";
-//    let smsg: String = format!("{} {}{}", cmsg, msg, emsg);
-//    println!("Высылаю данные клиенту: {}", smsg);
-//    let _ = writer.write(smsg.as_bytes());
-//    writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
-//    true
-//}
+
 
 pub fn new_account(args: &str) -> bool {
     let args: Vec<&str> = args.splitn(2, ' ').collect();
