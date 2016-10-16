@@ -1,5 +1,5 @@
 extern crate mysql;
-use time;
+//use time;
 
 #[derive(Debug, PartialEq, Eq)]
 struct Account {
@@ -55,9 +55,9 @@ pub fn check_name(name: &str) -> bool {
 
 /// записываем токен в БД
 pub fn set_token(name: &str, token: i64){
-    let current_time = time::get_time();
-    let localtime = time::now();
-    let localtime = localtime.asctime();
+    //let current_time = time::get_time();
+    //let localtime = time::now();
+    //let localtime = localtime.asctime();
     //println!("Unixtime: {}, localtime: {}", current_time.sec, localtime);
 
     let pool = mysql::Pool::new("mysql://root:dk@localhost:3306").unwrap();
