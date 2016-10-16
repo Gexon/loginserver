@@ -4,13 +4,10 @@ use std::io::prelude::*;
 use time::{Timespec, Duration};
 use time;
 use dbqury as db;
-
+use VERSION;
 
 pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream, args: &str) -> bool {
     let args: Vec<&str> = args.splitn(2, ' ').collect();
-    if args.len() != 2 {
-        return false
-    }
 
     //println!("Готов к передаче данных, имя {} пароль {}", args[0], args[1]);
 
@@ -42,6 +39,21 @@ pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream,
     true
 }
 
+// проверяем версию клиентской части.
+pub fn hello(writer: &mut BufWriter<&TcpStream>, args: &str) -> bool {
+    let args = args.trim();
+    //println!("args{}", args);
+    println!("VERSION {}", VERSION);
+    if args == VERSION {
+        let _ = writer.write(b"hello\n");
+        writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
+    } else {
+        let _ = writer.write(b"old_bich\n");
+        writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
+    }
+
+    true
+}
 
 pub fn new_account(args: &str) -> bool {
     let args: Vec<&str> = args.splitn(2, ' ').collect();

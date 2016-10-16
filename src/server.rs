@@ -3,7 +3,7 @@ use std::io::{BufReader, BufWriter};
 use std::io::prelude::*;
 use std::thread;
 use commands;
-
+use VERSION;
 //use std::mem;
 //use std::slice;
 
@@ -26,7 +26,7 @@ impl LoginServer {
     pub fn start(&mut self) -> bool {
         let listener = match TcpListener::bind(&*self.address) {
             Ok(data) => {
-                println!("Логин-сервер запущен.");
+                println!("Логин-сервер запущен. V{}", VERSION);
                 data
             },
             Err(e) => {
@@ -71,7 +71,7 @@ impl LoginServer {
 
                     let mut server_stream = TcpStream::connect(&*address).unwrap();
 
-                    println!("Принял данные: {}", data);
+                    println!("Принял данные: {}", data.trim());
 
                     let data = data.trim();
                     //let data: Vec<&str> = data.split_whitespace().collect();
@@ -81,6 +81,7 @@ impl LoginServer {
                     match data[0] {
                         "login" => commands::login(&mut writer, &mut server_stream, data[1]),
                         "register" => commands::new_account(data[1]),
+                        "hello" => commands::hello(&mut writer, data[1]),
                         _ => false,
                     }
                 };
