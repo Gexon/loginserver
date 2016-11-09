@@ -43,7 +43,7 @@ pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream,
 pub fn hello(writer: &mut BufWriter<&TcpStream>, args: &str) -> bool {
     let args = args.trim();
     //println!("args{}", args);
-    println!("VERSION {}", VERSION);
+    //println!("VERSION {}", VERSION);
     if args == VERSION {
         let _ = writer.write(b"hello\n");
         writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
