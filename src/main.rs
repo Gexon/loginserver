@@ -7,7 +7,7 @@ mod dbqury;
 
 use server::LoginServer;
 
-const  VERSION: &'static str = "7.7";
+const  VERSION: &'static str = "8.0";
 
 fn main() {
     let hname: &str = "192.168.0.131";
