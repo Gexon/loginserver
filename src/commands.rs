@@ -12,7 +12,7 @@ pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream,
     //println!("Готов к передаче данных, имя {} пароль {}", args[0], args[1]);
 
     if !db::check_name(args[0]) {
-        println!("Пользователь {} не зарегистрирован. Провожу регистрацию нового пользователя.", args[0]);
+        println!("LS>Пользователь {} не зарегистрирован. Провожу регистрацию нового пользователя.", args[0]);
         db::add_account(args[0], args[1], 0);
         let _ = writer.write(b"REG\n");
         writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
@@ -61,7 +61,7 @@ pub fn new_account(args: &str) -> bool {
         return false
     }
 
-    println!("Регистрирую новый аккаунт, имя {} пароль {}", args[0], args[1]);
+    println!("LS>Регистрирую новый аккаунт, имя {} пароль {}", args[0], args[1]);
     db::add_account(args[0], args[1], 0);
 
     true

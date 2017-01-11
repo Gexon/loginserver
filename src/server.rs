@@ -27,11 +27,11 @@ impl LoginServer {
     pub fn start(&mut self) -> bool {
         let listener = match TcpListener::bind(&*self.address) {
             Ok(data) => {
-                println!("Логин-сервер запущен. V{}", VERSION);
+                println!("LS>Логин-сервер запущен. V{}", VERSION);
                 data
             },
             Err(e) => {
-                println!("Ошибка открытия порта: {}", e);
+                println!("LS>Ошибка открытия порта: {}", e);
                 return false;
             },
         };
@@ -46,14 +46,14 @@ impl LoginServer {
                     });
                 },
                 Err(e) => {
-                    println!("Ошибка при подключении клиента: {}", e);
+                    println!("LS>Ошибка при подключении клиента: {}", e);
                     return false;
                 }
             }
         }
 
         fn handle_client(address: String, client_stream: TcpStream) {
-            println!("Подключен неизвестный клиент, ip: {}",
+            println!("LS>Подключен неизвестный клиент, ip: {}",
                      client_stream.peer_addr().unwrap().ip());
 
             let mut reader = BufReader::new(&client_stream);
@@ -64,7 +64,7 @@ impl LoginServer {
 
                 let result = {
                     if let 0 = reader.read_line(&mut data).unwrap() {
-                        println! ("Неизвестный клиент был отключен, ip: {}:{}",
+                        println! ("LS>Неизвестный клиент был отключен, ip: {}:{}",
                                   client_stream.peer_addr().unwrap().ip(),
                                   client_stream.peer_addr().unwrap().port());
                         return;
@@ -72,7 +72,7 @@ impl LoginServer {
 
                     let mut server_stream = TcpStream::connect(&*address).unwrap();
 
-                    println!("Принял данные: {}", data.trim());
+                    println!("LS>Принял данные: {}", data.trim());
 
                     let data = data.trim();
                     //let data: Vec<&str> = data.split_whitespace().collect();
@@ -88,7 +88,7 @@ impl LoginServer {
                 };
 
                 if !result {
-                    println!("Неверная команда");
+                    println!("LS>Неверная команда");
                     let _ = writer.write(b"ERR_COMMAND\n");
                     writer.flush().unwrap();
                 } else {
