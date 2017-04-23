@@ -42,7 +42,7 @@ impl LoginServer {
                     let address = self.address.clone();
 
                     thread::spawn(move || {
-                        handle_client(address, stream);
+                        handle_client(&address, &stream);
                     });
                 },
                 Err(e) => {
@@ -52,12 +52,12 @@ impl LoginServer {
             }
         }
 
-        fn handle_client(address: String, client_stream: TcpStream) {
+        fn handle_client(address: &str, client_stream: &TcpStream) {
             println!("LS>Подключен неизвестный клиент, ip: {}",
                      client_stream.peer_addr().unwrap().ip());
 
-            let mut reader = BufReader::new(&client_stream);
-            let mut writer = BufWriter::new(&client_stream);
+            let mut reader = BufReader::new(client_stream);
+            let mut writer = BufWriter::new(client_stream);
 
             loop {
                 let mut data = String::new();
@@ -70,7 +70,7 @@ impl LoginServer {
                         return;
                     }
 
-                    let mut server_stream = TcpStream::connect(&*address).unwrap();
+                    let mut server_stream = TcpStream::connect(address).unwrap();
 
                     println!("LS>Принял данные: {}", data.trim());
 

@@ -16,7 +16,7 @@ pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream,
         db::add_account(args[0], args[1], 0);
         let _ = writer.write(b"REG\n");
         writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
-        return true
+        true
     } else {
         // не проверяем токен авторизации
         let hash = db::get_mdhash(args[0]);
@@ -25,18 +25,18 @@ pub fn login(writer: &mut BufWriter<&TcpStream>, _server_stream: &mut TcpStream,
             let answer: String = format!("OK {}\n", token_i64);
             let _ = writer.write(answer.as_bytes());
             writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
-            return true
+            true
         } else {
             let _ = writer.write(b"ERR_LOGIN\n");
             writer.flush().unwrap();      // <------------ добавили проталкивание буферизованных данных в поток
-            return true
+            true
         }
     }
     //    match server_stream.write(format!("login {} {}\n", args[0], args[1]).as_bytes()) {
     //        Ok(_) => true,
     //        Err(_) => false,
     //    }
-    true
+    //true
 }
 
 // проверяем версию клиентской части.

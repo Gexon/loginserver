@@ -1,4 +1,5 @@
-#[macro_use] extern crate getopts;
+//#[macro_use]
+extern crate getopts;
 extern crate time;
 
 mod server;
@@ -7,7 +8,7 @@ mod dbqury;
 
 use server::LoginServer;
 
-const  VERSION: &'static str = "8.0";
+const  VERSION: &'static str = "8.2";
 
 fn main() {
     let hname: &str = "192.168.0.131";
