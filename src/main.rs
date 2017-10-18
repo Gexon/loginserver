@@ -8,7 +8,7 @@ mod dbqury;
 
 use server::LoginServer;
 
-const  VERSION: &'static str = "8.2";
+const  VERSION: &'static str = "8.3";
 
 fn main() {
     let hname: &str = "0.0.0.0";
